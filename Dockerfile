@@ -12,6 +12,8 @@ RUN cd /var/terraform && \
     wget https://releases.hashicorp.com/terraform/0.8.4/terraform_0.8.4_linux_amd64.zip && \
     unzip terraform_0.8.4_linux_amd64.zip
 
+RUN chown -R dockerslave /var/terraform
+
 ENV PATH /var/terraform:$PATH
 
 EXPOSE 22
