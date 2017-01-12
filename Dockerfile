@@ -1,15 +1,16 @@
-FROM hashicorp/terraform
+FROM ubuntu:16.04
 
-RUN addgroup dockerslave && adduser -s /bin/bash -D -G dockerslave dockerslave && \
-    echo dockerslave | passwd -d dockerslave
+RUN mkdir /home/dockerslave 
 
-RUN apk add --no-cache alpine-sdk bash bash-doc bash-completion wget tar bzip2 openjdk8 git openssh
+RUN adduser dockerslave && \
+    echo dockerslave | passwd dockerslave
+
+RUN apt-get wget unzip openjdk8 git openssh
+
+RUN cd /var && \
+    wget https://releases.hashicorp.com/terraform/0.8.4/terraform_0.8.4_linux_amd64.zip && \
+    unzip terraform_0.8.4_linux_amd64.zip
+
+ENV PATH "$PATH:/var/terraform"
 
 EXPOSE 22
-
-COPY entry.sh /entry.sh
-RUN chmod +x /entry.sh
-
-ENTRYPOINT ["/entry.sh"]
-
-CMD ["/usr/sbin/sshd", "-D", "-f", "/etc/ssh/sshd_config"]
