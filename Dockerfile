@@ -1,5 +1,7 @@
 FROM ubuntu:16.04
 
+RUN mkdir /var/run/sshd
+
 RUN useradd -ms /bin/bash dockerslave
 RUN echo "dockerslave:dockerslave" | chpasswd
 
