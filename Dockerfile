@@ -1,8 +1,7 @@
 FROM hashicorp/terraform
 
-RUN adduser -D dockerslave root
-
-RUN echo dockerslave | passwd -d dockerslave
+RUN addgroup dockerslave && adduser -s /bin/bash -D -G dockerslave dockerslave && \
+    echo dockerslave | passwd -d dockerslave
 
 RUN apk add --no-cache alpine-sdk bash bash-doc bash-completion wget tar bzip2 openjdk8 git openssh
 
