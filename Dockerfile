@@ -14,6 +14,8 @@ RUN cd /var/terraform && \
 
 RUN chown -R dockerslave /var/terraform
 
+USER dockerslave
 ENV PATH /var/terraform:$PATH
 
+USER root
 EXPOSE 22
