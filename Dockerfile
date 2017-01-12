@@ -1,9 +1,7 @@
 FROM ubuntu:16.04
 
-RUN mkdir /home/dockerslave 
-
-RUN adduser dockerslave && \
-    echo dockerslave | passwd dockerslave
+RUN useradd -ms /bin/bash dockerslave
+RUN echo dockerslave | passwd dockerslave
 
 RUN apt-get wget unzip openjdk8 git openssh
 
