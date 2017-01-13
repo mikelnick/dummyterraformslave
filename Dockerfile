@@ -1,25 +1,32 @@
 FROM ubuntu:16.04
 
-RUN mkdir /var/run/sshd /var/terraform /var/dockerslave
-
-RUN useradd -ms /bin/bash dockerslave
-RUN echo "dockerslave:dockerslave" | chpasswd
-
 RUN apt-get update && \
     apt-get -y install wget git unzip openjdk-8-jre openssh-server
+
+RUN sed -i 's|session    required     pam_loginuid.so|session    optional     pam_loginuid.so|g' /etc/pam.d/sshd
+
+RUN mkdir /var/run/sshd /var/terraform
+RUN adduser --quiet jenkins
+RUN echo "jenkins:jenkins" | chpasswd
+
+RUN chown -R jenkins /var/terraform
+
+USER jenkins
+
+RUN mkdir /home/jenkins/.ssh
 
 RUN cd /var/terraform && \
     wget https://releases.hashicorp.com/terraform/0.8.4/terraform_0.8.4_linux_amd64.zip && \
     unzip terraform_0.8.4_linux_amd64.zip
 
-RUN chown -R dockerslave /var/dockerslave
+RUN touch /home/jenkins/.ssh/known_hosts
 
-RUN echo 'export PATH=/usr/terraform:$PATH' >>/home/dockerslave/.profile
+RUN ssh-keyscan github.com >> /home/jenkins/.ssh/known_hosts
 
-RUN echo 'export PATH=/usr/terraform:$PATH' >>~/.bash_profile
+EXPOSE 22
 
-RUN echo 'export PATH=/usr/terraform:$PATH' >>/etc/environment
+USER root
 
 ENV PATH /var/terraform:$PATH
 
-EXPOSE 22
+CMD ["/usr/sbin/sshd", "-D"]
