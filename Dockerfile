@@ -16,6 +16,10 @@ RUN chown -R dockerslave /var/terraform
 
 RUN echo 'export PATH=/usr/terraform:$PATH' >>/home/dockerslave/.profile
 
+RUN echo 'export PATH=/usr/terraform:$PATH' >>~/.bash_profile
+
+RUN echo 'export PATH=/usr/terraform:$PATH' >>/etc/environment
+
 ENV PATH /var/terraform:$PATH
 
 
